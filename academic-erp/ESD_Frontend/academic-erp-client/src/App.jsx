@@ -10,17 +10,19 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await api.get('/user');
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-    checkAuth();
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+      localStorage.setItem('token', token);
+      window.history.pushState({}, document.title, "/");
+    }
+
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+      setIsAuthenticated(true);
+    }
   }, []);
 
   useEffect(() => {

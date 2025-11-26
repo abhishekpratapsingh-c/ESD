@@ -1,6 +1,6 @@
 package com.erp.controller;
 
-import com.erp.entity.Courses;
+import com.erp.dto.CourseDto;
 import com.erp.service.CourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +18,13 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Courses>> getCourses() {
+    public ResponseEntity<List<CourseDto>> getCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Courses> updateCourse(@PathVariable Integer id, @RequestBody Courses course) {
-        return ResponseEntity.ok(courseService.updateCourse(id, course));
+    public ResponseEntity<CourseDto> updateCourse(@PathVariable Integer id, @RequestBody CourseDto courseDto) {
+        return ResponseEntity.ok(courseService.updateCourse(id, courseDto));
     }
 
     @DeleteMapping("/{id}")
