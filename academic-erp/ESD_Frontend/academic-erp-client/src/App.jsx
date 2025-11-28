@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from './lib/api';
+import { Navbar, Container, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './components/Login';
 
@@ -71,57 +72,75 @@ function App() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setCourses([]);
+    // Optional: Redirect to login page or show a logged out message
+  };
+
   if (!isAuthenticated) {
     return <Login />;
   }
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Admin: Course Management</h2>
-      <table className="table table-bordered table-striped">
-        <thead className="thead-dark">
-          <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Faculty</th>
-            <th>Capacity</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.map((course) => (
-            <tr key={course.courseId}>
-              {editMode === course.courseId ? (
-                <td colSpan="5">
-                  <form onSubmit={handleUpdate} className="d-flex gap-2">
-                    <input name="courseCode" value={formData.courseCode} onChange={handleChange} className="form-control" />
-                    <input name="name" value={formData.name} onChange={handleChange} className="form-control" />
-                    <input name="faculty" value={formData.faculty} onChange={handleChange} className="form-control" />
-                    <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} className="form-control" style={{width: '100px'}} />
-                    <button type="submit" className="btn btn-success btn-sm">Save</button>
-                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => setEditMode(null)}>Cancel</button>
-                  </form>
-                </td>
-              ) : (
-                <>
-                  <td>{course.courseCode}</td>
-                  <td>{course.name}</td>
-                  <td>{course.faculty}</td>
-                  <td>{course.capacity}</td>
-                  <td>
-                    <button className="btn btn-primary btn-sm me-2" onClick={() => handleEditClick(course)}>Update</button>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(course.courseId)}>Delete</button>
-                  </td>
-                </>
-              )}
+    <>
+      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
+        <Container>
+          <Navbar.Brand href="#home">Academic ERP</Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse className="justify-content-end">
+            <Button variant="outline-light" onClick={handleLogout}>Sign Out</Button>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <Container>
+        <h2 className="mb-4">Admin: Course Management</h2>
+        <table className="table table-bordered table-striped">
+          <thead className="thead-dark">
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Faculty</th>
+              <th>Capacity</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="alert alert-info">
-        <strong>Note:</strong> Deleting a course will automatically cascade delete any related prerequisites in the database.
-      </div>
-    </div>
+          </thead>
+          <tbody>
+            {courses.map((course) => (
+              <tr key={course.courseId}>
+                {editMode === course.courseId ? (
+                  <td colSpan="5">
+                    <form onSubmit={handleUpdate} className="d-flex gap-2">
+                      <input name="courseCode" value={formData.courseCode} onChange={handleChange} className="form-control" />
+                      <input name="name" value={formData.name} onChange={handleChange} className="form-control" />
+                      <input name="faculty" value={formData.faculty} onChange={handleChange} className="form-control" />
+                      <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} className="form-control" style={{width: '100px'}} />
+                      <button type="submit" className="btn btn-success btn-sm">Save</button>
+                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => setEditMode(null)}>Cancel</button>
+                    </form>
+                  </td>
+                ) : (
+                  <>
+                    <td>{course.courseCode}</td>
+                    <td>{course.name}</td>
+                    <td>{course.faculty}</td>
+                    <td>{course.capacity}</td>
+                    <td>
+                      <button className="btn btn-primary btn-sm me-2" onClick={() => handleEditClick(course)}>Update</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(course.courseId)}>Delete</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="alert alert-info">
+          <strong>Note:</strong> Deleting a course will automatically cascade delete any related prerequisites in the database.
+        </div>
+      </Container>
+    </>
   );
 }
 
